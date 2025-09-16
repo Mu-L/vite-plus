@@ -98,7 +98,7 @@ impl Workspace {
             tracing::info!("Creating task cache directory at {}", cache_dir.display());
             std::fs::create_dir_all(cache_dir)?;
         }
-        let task_cache = TaskCache::load_from_path(&cache_path)?;
+        let task_cache = TaskCache::load_from_path(cache_path)?;
 
         let package_json_path = workspace_root.join("package.json");
         let package_json = if package_json_path.as_path().exists() {
@@ -153,7 +153,7 @@ impl Workspace {
             tracing::info!("Creating task cache directory at {}", cache_dir.display());
             std::fs::create_dir_all(cache_dir)?;
         }
-        let task_cache = TaskCache::load_from_path(&cache_path)?;
+        let task_cache = TaskCache::load_from_path(cache_path)?;
 
         // Build the complete task graph
         let mut task_graph_builder = TaskGraphBuilder::default();
@@ -200,6 +200,10 @@ impl Workspace {
 
     pub const fn cache(&self) -> &TaskCache {
         &self.task_cache
+    }
+
+    pub const fn cache_path(&self) -> &AbsolutePathBuf {
+        &self.task_cache.path
     }
 
     pub async fn unload(self) -> Result<(), Error> {

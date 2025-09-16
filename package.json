@@ -2,6 +2,7 @@
   "name": "vite-plus-monorepo",
   "private": true,
   "packageManager": "pnpm@10.16.1",
+  "type": "module",
   "scripts": {
     "bootstrap-cli": "pnpm --filter=@voidzero-dev/vite-plus build && pnpm --filter=@voidzero-dev/global build && pnpm copy-bindings && pnpm install-global-cli",
     "bootstrap-cli:ci": "pnpm --filter=@voidzero-dev/vite-plus build:ts && pnpm --filter=@voidzero-dev/global build && pnpm install-global-cli",
@@ -19,6 +20,7 @@
     "@voidzero-dev/vite-plus": "workspace:*",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.6",
+    "oxfmt": "catalog:",
     "oxlint": "catalog:",
     "typescript": "catalog:"
   },

@@ -19,9 +19,7 @@
     "node": ">=20.11.0"
   },
   "scripts": {
-    "build": "pnpm run build:binding && pnpm run build:ts",
-    "build:binding": "napi build --package-json-path ../package.json --cwd binding --platform --release --esm",
-    "build:ts": "tsdown",
+    "build": "oxnode ./build.ts",
     "test": "snap-test"
   },
   "files": [
@@ -37,8 +35,9 @@
   },
   "devDependencies": {
     "@napi-rs/cli": "catalog:",
-    "tsdown": "catalog:",
-    "@voidzero-dev/vite-plus-tools": "workspace:"
+    "@oxc-node/core": "catalog:",
+    "@voidzero-dev/vite-plus-tools": "workspace:",
+    "rolldown": "catalog:"
   },
   "napi": {
     "binaryName": "vite-plus",

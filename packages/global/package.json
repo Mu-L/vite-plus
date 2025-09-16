@@ -17,8 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "tsdown --watch",
-    "build": "tsdown",
+    "build": "rolldown -c rolldown.config.ts",
     "test": "snap-test"
   },
   "dependencies": {
@@ -27,9 +26,9 @@
     "vitest": "catalog:"
   },
   "devDependencies": {
-    "tsdown": "catalog:",
     "@voidzero-dev/vite-plus": "workspace:*",
-    "@voidzero-dev/vite-plus-tools": "workspace:"
+    "@voidzero-dev/vite-plus-tools": "workspace:",
+    "rolldown": "catalog:"
   },
   "engines": {
     "node": ">=20.11.0"

@@ -47,6 +47,8 @@ pub struct CliOptions {
     pub test: Arc<ThreadsafeFunction<(), Promise<JsCommandResolvedResult>>>,
     /// Optional working directory override
     pub cwd: Option<String>,
+    /// Read the vite.config.ts in the Node.js side and return the `lint` and `fmt` config JSON string back to the Rust side
+    pub resolve_universal_vite_config: Arc<ThreadsafeFunction<String, Promise<String>>>,
 }
 
 /// Result returned by JavaScript resolver functions.
@@ -103,6 +105,7 @@ pub async fn run(options: CliOptions) -> Result<()> {
     let fmt = options.fmt;
     let vite = options.vite;
     let test = options.test;
+    let resolve_universal_vite_config = options.resolve_universal_vite_config;
     // Call the Rust core with wrapped resolver functions
     let result = vite_task::main(
         cwd,
@@ -153,6 +156,15 @@ pub async fn run(options: CliOptions) -> Result<()> {
 
                 Ok(resolved.into())
             },
+            resolve_universal_vite_config: |cwd: String| async {
+                let resolved = resolve_universal_vite_config
+                    .call_async(Ok(cwd))
+                    .await
+                    .map_err(js_error_to_resolve_universal_vite_config_error)?
+                    .await
+                    .map_err(js_error_to_resolve_universal_vite_config_error)?;
+                Ok(resolved)
+            },
         }),
     )
     .await;
@@ -198,6 +210,14 @@ fn js_error_to_vite_error(err: napi::Error) -> Error {
 /// Convert JavaScript errors to Rust test errors
 fn js_error_to_test_error(err: napi::Error) -> Error {
     Error::TestFailed { status: err.status.to_string().into(), reason: err.to_string().into() }
+}
+
+/// Convert JavaScript errors to Rust resolve universal vite config errors
+fn js_error_to_resolve_universal_vite_config_error(err: napi::Error) -> Error {
+    Error::ResolveUniversalViteConfigFailed {
+        status: err.status.to_string().into(),
+        reason: err.to_string().into(),
+    }
 }
 
 fn parse_args() -> Args {

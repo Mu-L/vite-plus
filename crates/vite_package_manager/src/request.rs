@@ -25,7 +25,7 @@ impl Default for HttpClient {
 
 impl HttpClient {
     /// Create a new HTTP client with default settings (3 retries, 500ms min delay)
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::with_config(3, 500)
     }
 

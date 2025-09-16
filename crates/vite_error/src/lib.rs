@@ -102,6 +102,9 @@ pub enum Error {
     #[error("Test failed")]
     TestFailed { status: Str, reason: Str },
 
+    #[error("Resolve universal vite config failed")]
+    ResolveUniversalViteConfigFailed { status: Str, reason: Str },
+
     #[error(
         "The stripped path ({stripped_path:?}) is not a valid relative path because: {invalid_path_data_error}"
     )]

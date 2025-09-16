@@ -5,7 +5,7 @@
     "moduleResolution": "NodeNext",
     "composite": true,
     "outDir": "./dist",
-    "noEmit": false,
+    "noEmit": true,
     "rootDir": "./src"
   },
   "include": ["src"],

@@ -6,7 +6,7 @@ use diff::Diff;
 use rusqlite::{Connection, OptionalExtension as _};
 use serde::Serialize;
 use tokio::sync::Mutex;
-use vite_path::AbsolutePath;
+use vite_path::{AbsolutePath, AbsolutePathBuf};
 use vite_str::Str;
 
 use crate::{
@@ -39,6 +39,7 @@ impl CommandCacheValue {
 #[derive(Debug)]
 pub struct TaskCache {
     conn: Mutex<Connection>,
+    pub(crate) path: AbsolutePathBuf,
 }
 
 /// Key to identify a task run.
@@ -79,8 +80,8 @@ impl Display for FingerprintMismatch {
 }
 
 impl TaskCache {
-    pub fn load_from_path(path: impl AsRef<AbsolutePath>) -> Result<Self, Error> {
-        let path = path.as_ref();
+    pub fn load_from_path(cache_path: AbsolutePathBuf) -> Result<Self, Error> {
+        let path: &AbsolutePath = cache_path.as_ref();
         tracing::info!("Creating task cache directory at {:?}", path);
         std::fs::create_dir_all(path)?;
 
@@ -107,7 +108,7 @@ impl TaskCache {
             }
         }
         conn.execute_batch("COMMIT")?;
-        Ok(Self { conn: Mutex::new(conn) })
+        Ok(Self { conn: Mutex::new(conn), path: cache_path })
     }
 
     #[tracing::instrument]

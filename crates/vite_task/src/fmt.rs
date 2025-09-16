@@ -1,10 +1,16 @@
-use std::{future::Future, process::ExitStatus};
+use std::{collections::HashMap, future::Future, process::ExitStatus};
 
 use petgraph::stable_graph::StableGraph;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     Error, ResolveCommandResult, Workspace, config::ResolvedTask, schedule::ExecutionPlan,
 };
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FmtConfig {
+    pub rules: HashMap<String, String>,
+}
 
 #[tracing::instrument(skip(resolve_fmt_command, workspace))]
 pub async fn fmt<Fmt: Future<Output = Result<ResolveCommandResult, Error>>, FmtFn: Fn() -> Fmt>(

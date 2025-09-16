@@ -30,6 +30,8 @@ catalog:
 minimumReleaseAge: 1440
 
 minimumReleaseAgeExclude:
+  - "@oxc-project/types"
+  - "@rolldown/pluginutils"
   - oxfmt
   - oxlint
   - oxlint-tsgolint
