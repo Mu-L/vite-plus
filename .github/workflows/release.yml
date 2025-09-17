@@ -2,6 +2,9 @@ name: Release
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - 09-17-chore_fix_npm_publish
 
 jobs:
   build-rust:
@@ -112,11 +115,19 @@ jobs:
           sed -i 's/"version": "0.0.0"/"version": "0.0.0-${{ github.sha }}"/' packages/global/package.json
           sed -i 's/"version": "0.0.0"/"version": "0.0.0-${{ github.sha }}"/' packages/cli/package.json
 
+      - name: Setup Node.js and Authenticate
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version-file: ".node-version"
+          # This tells setup-node which registry you want to log in to
+          registry-url: "https://npm.pkg.github.com"
+          # If your packages are scoped (e.g., @your-org/your-package), add this
+          scope: "@voidzero-dev"
+
       - name: Publish
         run: |
-          echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> ${NPM_CONFIG_USERCONFIG}
-          echo "@voidzero-dev:registry=https://npm.pkg.github.com/" >> ${NPM_CONFIG_USERCONFIG}
+          pnpm whoami --registry https://npm.pkg.github.com
           pnpm publish --filter=./packages/global --registry https://npm.pkg.github.com --no-git-checks
           pnpm publish --filter=./packages/cli --registry https://npm.pkg.github.com --no-git-checks
         env:
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
