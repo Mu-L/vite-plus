@@ -1,10 +1,12 @@
-use std::{collections::HashMap, future::Future, process::ExitStatus};
+use std::{collections::HashMap, future::Future};
 
 use petgraph::stable_graph::StableGraph;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    Error, ResolveCommandResult, Workspace, config::ResolvedTask, schedule::ExecutionPlan,
+    Error, ResolveCommandResult, Workspace,
+    config::ResolvedTask,
+    schedule::{ExecutionPlan, ExecutionSummary},
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -20,7 +22,7 @@ pub async fn lint<
     resolve_lint_command: LintFn,
     workspace: &mut Workspace,
     args: &Vec<String>,
-) -> Result<Option<ExitStatus>, Error> {
+) -> Result<ExecutionSummary, Error> {
     let resolved_task =
         ResolvedTask::resolve_from_builtin(workspace, resolve_lint_command, "lint", args.iter())
             .await?;

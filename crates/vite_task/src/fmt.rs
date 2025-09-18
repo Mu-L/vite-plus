@@ -1,11 +1,13 @@
-use std::{collections::HashMap, future::Future, process::ExitStatus};
+use std::{collections::HashMap, future::Future};
 
 use petgraph::stable_graph::StableGraph;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::{
-    Error, ResolveCommandResult, Workspace, config::ResolvedTask, schedule::ExecutionPlan,
+    Error, ResolveCommandResult, Workspace,
+    config::ResolvedTask,
+    schedule::{ExecutionPlan, ExecutionSummary},
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -18,7 +20,7 @@ pub async fn fmt<Fmt: Future<Output = Result<ResolveCommandResult, Error>>, FmtF
     resolve_fmt_command: FmtFn,
     workspace: &mut Workspace,
     args: &Vec<String>,
-) -> Result<Option<ExitStatus>, Error> {
+) -> Result<ExecutionSummary, Error> {
     let resolved_task =
         ResolvedTask::resolve_from_builtin(workspace, resolve_fmt_command, "fmt", args.iter())
             .await?;

@@ -2,7 +2,6 @@ use std::{
     env,
     io::{self, IsTerminal, Write},
     iter,
-    process::ExitStatus,
 };
 
 use crossterm::{
@@ -17,7 +16,9 @@ use vite_package_manager::package_manager::{PackageManager, PackageManagerType};
 use vite_path::AbsolutePathBuf;
 
 use crate::{
-    Error, ResolveCommandResult, Workspace, config::ResolvedTask, schedule::ExecutionPlan,
+    Error, ResolveCommandResult, Workspace,
+    config::ResolvedTask,
+    schedule::{ExecutionPlan, ExecutionSummary},
 };
 
 /// Install command.
@@ -43,7 +44,7 @@ impl InstallCommand {
         InstallCommandBuilder::new(workspace_root)
     }
 
-    pub async fn execute(self, args: &Vec<String>) -> Result<Option<ExitStatus>, Error> {
+    pub async fn execute(self, args: &Vec<String>) -> Result<ExecutionSummary, Error> {
         // Handle UnrecognizedPackageManager error and let user select a package manager
         let package_manager = match PackageManager::builder(&self.workspace_root).build().await {
             Ok(pm) => pm,
@@ -68,10 +69,10 @@ impl InstallCommand {
         )?;
         let mut task_graph: StableGraph<ResolvedTask, ()> = Default::default();
         task_graph.add_node(resolved_task);
-        let exit_status = ExecutionPlan::plan(task_graph, false)?.execute(&mut workspace).await?;
+        let summary = ExecutionPlan::plan(task_graph, false)?.execute(&mut workspace).await?;
         workspace.unload().await?;
 
-        Ok(exit_status)
+        Ok(summary)
     }
 }
 
