@@ -4,11 +4,12 @@ use std::{
     fs::{self, File},
     io::{BufReader, Seek, SeekFrom},
     path::Path,
+    sync::OnceLock,
 };
 
 use semver::{Version, VersionReq};
 use serde::{Deserialize, Serialize};
-use tokio::fs::remove_dir_all;
+use tokio::{fs::remove_dir_all, sync::Mutex};
 use vite_error::Error;
 use vite_path::{AbsolutePath, AbsolutePathBuf, RelativePathBuf};
 use vite_str::Str;
@@ -18,6 +19,13 @@ use crate::{
     request::{HttpClient, download_and_extract_tgz_with_hash},
     shim,
 };
+
+// Global lock for file system operations to prevent race conditions
+static FS_OPERATION_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+
+fn get_fs_lock() -> &'static Mutex<()> {
+    FS_OPERATION_LOCK.get_or_init(|| Mutex::new(()))
+}
 
 #[derive(Serialize, Deserialize, Clone, Default)]
 #[serde(rename_all = "camelCase")]
@@ -440,14 +448,21 @@ async fn download_package_manager(
         return Ok(install_dir);
     }
 
-    // rename $target_dir_tmp to $target_dir
-    tracing::debug!("Rename {:?} to {:?}", target_dir_tmp, target_dir);
-    remove_dir_all_force(&target_dir).await?;
-    tokio::fs::rename(&target_dir_tmp, &target_dir).await?;
+    {
+        // Acquire lock for critical file system operations
+        let _lock = get_fs_lock().lock().await;
 
-    // create shim file
-    tracing::debug!("Create shim files for {}", bin_name);
-    create_shim_files(package_manager_type, &bin_prefix).await?;
+        // rename $target_dir_tmp to $target_dir
+        tracing::debug!("Rename {:?} to {:?}", target_dir_tmp, target_dir);
+        remove_dir_all_force(&target_dir).await?;
+        tokio::fs::rename(&target_dir_tmp, &target_dir).await?;
+
+        // create shim file
+        tracing::debug!("Create shim files for {}", bin_name);
+        create_shim_files(package_manager_type, &bin_prefix).await?;
+
+        // Lock is automatically released when _lock goes out of scope
+    }
 
     Ok(install_dir)
 }
