@@ -1,45 +1,71 @@
-> vite install --help # print help message
-Install a package
+[1]> vite install --help # print help message
+file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10260
+	if (!workerState) throw new Error("Vitest failed to access its internal state.\n\nOne of the following is possible:\n- \"vitest\" is imported directly without running \"vitest\" command\n- \"vitest\" is imported inside \"globalSetup\" (to fix this, use \"setupFiles\" instead, because \"globalSetup\" runs in a different context)\n- \"vitest\" is imported inside Vite / Vitest config file\n- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues\n");
+	                        ^
 
-Usage:
-npm install [<package-spec> ...]
+Error: Vitest failed to access its internal state.
 
-Options:
-[-S|--save|--no-save|--save-prod|--save-dev|--save-optional|--save-peer|--save-bundle]
-[-E|--save-exact] [-g|--global]
-[--install-strategy <hoisted|nested|shallow|linked>] [--legacy-bundling]
-[--global-style] [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]
-[--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]
-[--strict-peer-deps] [--prefer-dedupe] [--no-package-lock] [--package-lock-only]
-[--foreground-scripts] [--ignore-scripts] [--no-audit] [--no-bin-links]
-[--no-fund] [--dry-run] [--cpu <cpu>] [--os <os>] [--libc <libc>]
-[-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
-[-ws|--workspaces] [--include-workspace-root] [--install-links]
+One of the following is possible:
+- "vitest" is imported directly without running "vitest" command
+- "vitest" is imported inside "globalSetup" (to fix this, use "setupFiles" instead, because "globalSetup" runs in a different context)
+- "vitest" is imported inside Vite / Vitest config file
+- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues
 
-aliases: add, i, in, ins, inst, insta, instal, isnt, isnta, isntal, isntall
+    at getWorkerState (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10260:26)
+    at getCurrentEnvironment (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10264:9)
+    at createExpect (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:12526:16)
+    at file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:12562:22
+    at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:651:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
 
-Run "npm help install" for more info
+Node.js v<semver>
 
+[1]> vite install --production # https://docs.npmjs.com/cli/v10/commands/npm-install
+file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10260
+	if (!workerState) throw new Error("Vitest failed to access its internal state.\n\nOne of the following is possible:\n- \"vitest\" is imported directly without running \"vitest\" command\n- \"vitest\" is imported inside \"globalSetup\" (to fix this, use \"setupFiles\" instead, because \"globalSetup\" runs in a different context)\n- \"vitest\" is imported inside Vite / Vitest config file\n- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues\n");
+	                        ^
 
-> vite install --production # https://docs.npmjs.com/cli/v10/commands/npm-install
+Error: Vitest failed to access its internal state.
 
-added 1 package, and audited 2 packages in <variable>ms
+One of the following is possible:
+- "vitest" is imported directly without running "vitest" command
+- "vitest" is imported inside "globalSetup" (to fix this, use "setupFiles" instead, because "globalSetup" runs in a different context)
+- "vitest" is imported inside Vite / Vitest config file
+- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues
 
-found 0 vulnerabilities
+    at getWorkerState (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10260:26)
+    at getCurrentEnvironment (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10264:9)
+    at createExpect (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:12526:16)
+    at file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:12562:22
+    at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:651:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
 
+Node.js v<semver>
 
-npm warn config production Use `--omit=dev` instead.
+[1]> ls node_modules
+ls: node_modules: No such file or directory
 
-> ls node_modules
-@oxlint
-tslib
+[1]> vite install --production # install again hit cache
+file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10260
+	if (!workerState) throw new Error("Vitest failed to access its internal state.\n\nOne of the following is possible:\n- \"vitest\" is imported directly without running \"vitest\" command\n- \"vitest\" is imported inside \"globalSetup\" (to fix this, use \"setupFiles\" instead, because \"globalSetup\" runs in a different context)\n- \"vitest\" is imported inside Vite / Vitest config file\n- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues\n");
+	                        ^
 
-> vite install --production # install again hit cache
-✓ cache hit, replaying
+Error: Vitest failed to access its internal state.
 
-added 1 package, and audited 2 packages in <variable>ms
+One of the following is possible:
+- "vitest" is imported directly without running "vitest" command
+- "vitest" is imported inside "globalSetup" (to fix this, use "setupFiles" instead, because "globalSetup" runs in a different context)
+- "vitest" is imported inside Vite / Vitest config file
+- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues
 
-found 0 vulnerabilities
+    at getWorkerState (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10260:26)
+    at getCurrentEnvironment (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10264:9)
+    at createExpect (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:12526:16)
+    at file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:12562:22
+    at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:651:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
 
-
-npm warn config production Use `--omit=dev` instead.
+Node.js v<semver>

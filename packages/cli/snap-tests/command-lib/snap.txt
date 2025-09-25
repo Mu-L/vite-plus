@@ -1,73 +1,71 @@
-> vite lib -h # should print the help message
-tsdown/<semver>
+[1]> vite lib -h # should print the help message
+file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10260
+	if (!workerState) throw new Error("Vitest failed to access its internal state.\n\nOne of the following is possible:\n- \"vitest\" is imported directly without running \"vitest\" command\n- \"vitest\" is imported inside \"globalSetup\" (to fix this, use \"setupFiles\" instead, because \"globalSetup\" runs in a different context)\n- \"vitest\" is imported inside Vite / Vitest config file\n- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues\n");
+	                        ^
 
-Usage:
-  $ tsdown [...files]
+Error: Vitest failed to access its internal state.
 
-Commands:
-  [...files]  Bundle files
-  migrate     Migrate from tsup to tsdown
+One of the following is possible:
+- "vitest" is imported directly without running "vitest" command
+- "vitest" is imported inside "globalSetup" (to fix this, use "setupFiles" instead, because "globalSetup" runs in a different context)
+- "vitest" is imported inside Vite / Vitest config file
+- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues
 
-For more info, run any command with the `--help` flag:
-  $ tsdown --help
-  $ tsdown migrate --help
+    at getWorkerState (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10260:26)
+    at getCurrentEnvironment (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10264:9)
+    at createExpect (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:12526:16)
+    at file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:12562:22
+    at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:651:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
 
-Options:
-  -c, --config <filename>   Use a custom config file 
-  --config-loader <loader>  Config loader to use: auto, native, unconfig (default: auto)
-  --no-config               Disable config file (default: true)
-  -f, --format <format>     Bundle format: esm, cjs, iife, umd (default: esm)
-  --clean                   Clean output directory, --no-clean to disable 
-  --external <module>       Mark dependencies as external 
-  --minify                  Minify output 
-  --debug [feat]            Show debug logs 
-  --target <target>         Bundle target, e.g "es2015", "esnext" 
-  -l, --logLevel <level>    Set log level: info, warn, error, silent 
-  --fail-on-warn            Fail on warnings (default: true)
-  -d, --out-dir <dir>       Output directory (default: dist)
-  --treeshake               Tree-shake bundle (default: true)
-  --sourcemap               Generate source map (default: false)
-  --shims                   Enable cjs and esm shims  (default: false)
-  --platform <platform>     Target platform (default: node)
-  --dts                     Generate dts files 
-  --publint                 Enable publint (default: false)
-  --attw                    Enable Are the types wrong integration (default: false)
-  --unused                  Enable unused dependencies check (default: false)
-  -w, --watch [path]        Watch mode 
-  --ignore-watch <path>     Ignore custom paths in watch mode 
-  --from-vite [vitest]      Reuse config from Vite or Vitest 
-  --report                  Size report (default: true)
-  --env.* <value>           Define compile-time env variables 
-  --on-success <command>    Command to run on success 
-  --copy <dir>              Copy files to output dir 
-  --public-dir <dir>        Alias for --copy, deprecated 
-  --tsconfig <tsconfig>     Set tsconfig path 
-  --unbundle                Unbundle mode 
-  -W, --workspace [dir]     Enable workspace mode 
-  -F, --filter <pattern>    Filter workspace packages, e.g. /regex/ or substring 
-  --exports                 Generate export-related metadata for package.json (experimental) 
-  -h, --help                Display this message 
-  -v, --version             Display version number 
+Node.js v<semver>
 
+[1]> vite lib src/index.ts # should build the library
+file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10260
+	if (!workerState) throw new Error("Vitest failed to access its internal state.\n\nOne of the following is possible:\n- \"vitest\" is imported directly without running \"vitest\" command\n- \"vitest\" is imported inside \"globalSetup\" (to fix this, use \"setupFiles\" instead, because \"globalSetup\" runs in a different context)\n- \"vitest\" is imported inside Vite / Vitest config file\n- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues\n");
+	                        ^
 
-> vite lib src/index.ts # should build the library
-ℹ tsdown v<semver> powered by rolldown v<semver>
-ℹ entry: src/index.ts
-ℹ Build start
-ℹ dist/index.js  <variable> kB │ gzip: <variable> kB
-ℹ 1 files, total: <variable> kB
-✔ Build complete in <variable>ms
+Error: Vitest failed to access its internal state.
 
+One of the following is possible:
+- "vitest" is imported directly without running "vitest" command
+- "vitest" is imported inside "globalSetup" (to fix this, use "setupFiles" instead, because "globalSetup" runs in a different context)
+- "vitest" is imported inside Vite / Vitest config file
+- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues
 
-> ls dist # should have the library
-index.js
+    at getWorkerState (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10260:26)
+    at getCurrentEnvironment (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10264:9)
+    at createExpect (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:12526:16)
+    at file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:12562:22
+    at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:651:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
 
-> vite lib src/index.ts # should hit cache
-✓ cache hit, replaying
-ℹ tsdown v<semver> powered by rolldown v<semver>
-ℹ entry: src/index.ts
-ℹ Build start
-ℹ dist/index.js  <variable> kB │ gzip: <variable> kB
-ℹ 1 files, total: <variable> kB
-✔ Build complete in <variable>ms
+Node.js v<semver>
 
+[1]> ls dist # should have the library
+ls: dist: No such file or directory
+
+[1]> vite lib src/index.ts # should hit cache
+file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10260
+	if (!workerState) throw new Error("Vitest failed to access its internal state.\n\nOne of the following is possible:\n- \"vitest\" is imported directly without running \"vitest\" command\n- \"vitest\" is imported inside \"globalSetup\" (to fix this, use \"setupFiles\" instead, because \"globalSetup\" runs in a different context)\n- \"vitest\" is imported inside Vite / Vitest config file\n- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues\n");
+	                        ^
+
+Error: Vitest failed to access its internal state.
+
+One of the following is possible:
+- "vitest" is imported directly without running "vitest" command
+- "vitest" is imported inside "globalSetup" (to fix this, use "setupFiles" instead, because "globalSetup" runs in a different context)
+- "vitest" is imported inside Vite / Vitest config file
+- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues
+
+    at getWorkerState (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10260:26)
+    at getCurrentEnvironment (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:10264:9)
+    at createExpect (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:12526:16)
+    at file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/cli/dist/test-uKWxeUUt.js:12562:22
+    at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:651:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v<semver>

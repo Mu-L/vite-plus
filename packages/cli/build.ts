@@ -40,7 +40,7 @@ const { task } = await cli.build({
 const output = (await task).find((o) => o.kind === 'node');
 
 await build({
-  input: ['./src/bin.ts', './src/index.ts'],
+  input: ['./src/bin.ts', './src/index.ts', './src/test.ts'],
   external: [/^node:/, 'rolldown-vite'],
   output: {
     format: 'esm',
@@ -64,6 +64,7 @@ const program = createProgram({
   rootNames: [
     join(srcDir, 'index.ts'),
     join(srcDir, 'client.ts'),
+    join(srcDir, 'test.ts'),
   ],
   options: {
     ...options,

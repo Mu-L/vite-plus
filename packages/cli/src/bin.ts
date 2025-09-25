@@ -14,7 +14,7 @@ import { doc } from './doc.js';
 import { fmt } from './fmt.js';
 import { lib } from './lib.js';
 import { lint } from './lint.js';
-import { test } from './test.js';
+import { resolveTestBinary } from './test.js';
 import { vite } from './vite.js';
 
 async function resolveUniversalViteConfig(err: null | Error, viteConfigCwd: string) {
@@ -37,7 +37,7 @@ run({
   lib, // Resolves tsdown binary for lib bundling
   fmt, // Resolves oxfmt binary for formatting
   vite, // Resolves vite binary for build/dev commands
-  test, // Resolves vitest binary for test commands
+  test: resolveTestBinary, // Resolves vitest binary for test commands
   doc, // Resolves vitepress binary for doc commands
   resolveUniversalViteConfig,
 }).catch((err) => {

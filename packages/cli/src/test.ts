@@ -20,7 +20,7 @@ import { DEFAULT_ENVS, resolve } from './utils.js';
  * Vitest is Vite's testing framework that provides a Jest-compatible
  * testing experience with Vite's fast HMR and transformation pipeline.
  */
-export async function test(): Promise<{
+export async function resolveTestBinary(): Promise<{
   binPath: string;
   envs: Record<string, string>;
 }> {
@@ -40,3 +40,6 @@ export async function test(): Promise<{
       },
   };
 }
+
+// export vitest to let `import 'vite/vitest'` work
+export * from 'vitest';

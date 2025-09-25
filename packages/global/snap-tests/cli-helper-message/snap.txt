@@ -1,25 +1,21 @@
-> vp -h # show help message
-Usage: vp [OPTIONS] [TASK] [-- <TASK_ARGS>...] <COMMAND>
+[1]> vp -h # show help message
+file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/global/dist/bin-DY1JqiJi.js:9959
+	if (!workerState) throw new Error("Vitest failed to access its internal state.\n\nOne of the following is possible:\n- \"vitest\" is imported directly without running \"vitest\" command\n- \"vitest\" is imported inside \"globalSetup\" (to fix this, use \"setupFiles\" instead, because \"globalSetup\" runs in a different context)\n- \"vitest\" is imported inside Vite / Vitest config file\n- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues\n");
+	                        ^
 
-Commands:
-  run      
-  lint     
-  fmt      
-  build    
-  test     
-  lib      Lib command, build a library
-  install  Install command. It will be passed to the package manager's install command currently
-  dev      
-  doc      Doc command, build documentation
-  cache    Manage the task cache
-  help     Print this message or the help of the given subcommand(s)
+Error: Vitest failed to access its internal state.
 
-Arguments:
-  [TASK]          
-  [TASK_ARGS]...  Optional arguments for the tasks, captured after '--'
+One of the following is possible:
+- "vitest" is imported directly without running "vitest" command
+- "vitest" is imported inside "globalSetup" (to fix this, use "setupFiles" instead, because "globalSetup" runs in a different context)
+- "vitest" is imported inside Vite / Vitest config file
+- Otherwise, it might be a Vitest bug. Please report it to https://github.com/vitest-dev/vitest/issues
 
-Options:
-  -d, --debug     Display cache for debugging
-      --no-debug  
-  -h, --help      Print help
-  -V, --version   Print version
+    at getWorkerState (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/global/dist/bin-DY1JqiJi.js:9959:26)
+    at getCurrentEnvironment (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/global/dist/bin-DY1JqiJi.js:9963:9)
+    at createExpect (file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/global/dist/bin-DY1JqiJi.js:12213:16)
+    at file:///Users/fengmk2/git/github.com/voidzero-dev/vite-plus/packages/global/dist/bin-DY1JqiJi.js:12249:22
+    at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:651:26)
+
+Node.js v<semver>
