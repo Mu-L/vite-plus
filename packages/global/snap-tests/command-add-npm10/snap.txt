@@ -39,7 +39,6 @@ Options:
 Running: npm install --save-dev --no-audit testnpm2
 
 added 1 package in <variable>ms
-
 {
   "name": "command-add-npm10",
   "version": "1.0.0",
@@ -53,7 +52,6 @@ added 1 package in <variable>ms
 Running: npm install --no-audit testnpm2 test-vite-plus-install
 
 added 1 package in <variable>ms
-
 {
   "name": "command-add-npm10",
   "version": "1.0.0",
@@ -70,7 +68,6 @@ added 1 package in <variable>ms
 Running: npm install --save-peer --no-audit test-vite-plus-package@<semver>
 
 added 1 package in <variable>ms
-
 {
   "name": "command-add-npm10",
   "version": "1.0.0",
@@ -90,7 +87,6 @@ added 1 package in <variable>ms
 Running: npm install --save-optional --no-audit test-vite-plus-package-optional
 
 added 1 package in <variable>ms
-
 {
   "name": "command-add-npm10",
   "version": "1.0.0",
@@ -113,7 +109,6 @@ added 1 package in <variable>ms
 Running: npm install --loglevel=warn --no-audit test-vite-plus-package-optional
 
 up to date in <variable>ms
-
 {
   "name": "command-add-npm10",
   "version": "1.0.0",

@@ -3,24 +3,22 @@ Running: pnpm add --workspace-root --save-dev testnpm2
 Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
 
 devDependencies:
-+ testnpm2 ^1.0.1
++ testnpm2 catalog:
 
 Packages: +<variable>
 +<repeat>
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm10-with-workspace",
   "version": "1.0.0",
   "packageManager": "pnpm@<semver>",
   "devDependencies": {
-    "testnpm2": "^1.0.1"
+    "testnpm2": "catalog:"
   }
 }
 
 > vp add @vite-plus-test/utils --workspace && cat package.json # should add @vite-plus-test/utils to workspace root
 Running: pnpm add --workspace @vite-plus-test/utils
- WARN  `node_modules` is present. Lockfile only installation will make it out-of-date
 Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
 
 dependencies:
@@ -28,13 +26,12 @@ dependencies:
 
 Already up to date
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm10-with-workspace",
   "version": "1.0.0",
   "packageManager": "pnpm@<semver>",
   "devDependencies": {
-    "testnpm2": "^1.0.1"
+    "testnpm2": "catalog:"
   },
   "dependencies": {
     "@vite-plus-test/utils": "workspace:*"
@@ -43,17 +40,15 @@ Done in <variable>ms using pnpm v<semver>
 
 > vp add testnpm2 test-vite-plus-install@1.0.0 --filter app && cat package.json packages/app/package.json packages/utils/package.json # should add packages to packages/app
 Running: pnpm --filter app add testnpm2 test-vite-plus-install@<semver>
-.                                        |  WARN  `node_modules` is present. Lockfile only installation will make it out-of-date
-Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
+ Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
 .                                        |   +1 +<repeat>
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm10-with-workspace",
   "version": "1.0.0",
   "packageManager": "pnpm@<semver>",
   "devDependencies": {
-    "testnpm2": "^1.0.1"
+    "testnpm2": "catalog:"
   },
   "dependencies": {
     "@vite-plus-test/utils": "workspace:*"
@@ -62,8 +57,8 @@ Done in <variable>ms using pnpm v<semver>
 {
   "name": "app",
   "dependencies": {
-    "test-vite-plus-install": "1.0.0",
-    "testnpm2": "^1.0.1"
+    "test-vite-plus-install": "catalog:",
+    "testnpm2": "catalog:"
   }
 }
 {
@@ -74,16 +69,14 @@ Done in <variable>ms using pnpm v<semver>
 
 > vp add @vite-plus-test/utils --workspace --filter app && cat package.json packages/app/package.json packages/utils/package.json # should add @vite-plus-test/utils to packages/app
 Running: pnpm --filter app add --workspace @vite-plus-test/utils
-.                                        |  WARN  `node_modules` is present. Lockfile only installation will make it out-of-date
 Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm10-with-workspace",
   "version": "1.0.0",
   "packageManager": "pnpm@<semver>",
   "devDependencies": {
-    "testnpm2": "^1.0.1"
+    "testnpm2": "catalog:"
   },
   "dependencies": {
     "@vite-plus-test/utils": "workspace:*"
@@ -93,8 +86,8 @@ Done in <variable>ms using pnpm v<semver>
   "name": "app",
   "dependencies": {
     "@vite-plus-test/utils": "workspace:*",
-    "test-vite-plus-install": "1.0.0",
-    "testnpm2": "^1.0.1"
+    "test-vite-plus-install": "catalog:",
+    "testnpm2": "catalog:"
   }
 }
 {
@@ -105,15 +98,14 @@ Done in <variable>ms using pnpm v<semver>
 
 > vp add -E testnpm2 test-vite-plus-install --filter "*" && cat package.json packages/app/package.json packages/utils/package.json # should add testnpm2 test-vite-plus-install to all packages except workspace root
 Running: pnpm --filter * add --save-exact testnpm2 test-vite-plus-install
-Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
+  Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm10-with-workspace",
   "version": "1.0.0",
   "packageManager": "pnpm@<semver>",
   "devDependencies": {
-    "testnpm2": "^1.0.1"
+    "testnpm2": "catalog:"
   },
   "dependencies": {
     "@vite-plus-test/utils": "workspace:*"
@@ -123,8 +115,8 @@ Done in <variable>ms using pnpm v<semver>
   "name": "app",
   "dependencies": {
     "@vite-plus-test/utils": "workspace:*",
-    "test-vite-plus-install": "1.0.0",
-    "testnpm2": "^1.0.1"
+    "test-vite-plus-install": "catalog:",
+    "testnpm2": "catalog:"
   }
 }
 {
@@ -132,8 +124,8 @@ Done in <variable>ms using pnpm v<semver>
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "test-vite-plus-install": "1.0.0",
-    "testnpm2": "^1.0.1"
+    "test-vite-plus-install": "catalog:",
+    "testnpm2": "catalog:"
   }
 }
 
@@ -142,13 +134,12 @@ Running: pnpm --filter * add --workspace-root --save-catalog test-vite-plus-pack
 .                                        |   +1 +<repeat>
 Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm10-with-workspace",
   "version": "1.0.0",
   "packageManager": "pnpm@<semver>",
   "devDependencies": {
-    "testnpm2": "^1.0.1"
+    "testnpm2": "catalog:"
   },
   "dependencies": {
     "@vite-plus-test/utils": "workspace:*",
@@ -159,9 +150,9 @@ Done in <variable>ms using pnpm v<semver>
   "name": "app",
   "dependencies": {
     "@vite-plus-test/utils": "workspace:*",
-    "test-vite-plus-install": "1.0.0",
+    "test-vite-plus-install": "catalog:",
     "test-vite-plus-package": "catalog:",
-    "testnpm2": "^1.0.1"
+    "testnpm2": "catalog:"
   }
 }
 {
@@ -169,39 +160,41 @@ Done in <variable>ms using pnpm v<semver>
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "test-vite-plus-install": "1.0.0",
+    "test-vite-plus-install": "catalog:",
     "test-vite-plus-package": "catalog:",
-    "testnpm2": "^1.0.1"
+    "testnpm2": "catalog:"
   }
 }
 packages:
   - packages/*
 
 catalog:
+  test-vite-plus-install: <semver>
   test-vite-plus-package: <semver>
+  testnpm2: <semver>
 
 > vp add --filter app test-vite-plus-package-optional --save-catalog-name v1 && cat packages/app/package.json pnpm-workspace.yaml # should add with save-catalog-name
 Running: pnpm --filter app add --save-catalog-name=v1 test-vite-plus-package-optional
-.                                        |  WARN  `node_modules` is present. Lockfile only installation will make it out-of-date
 Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
 .                                        |   +1 +<repeat>
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "app",
   "dependencies": {
     "@vite-plus-test/utils": "workspace:*",
-    "test-vite-plus-install": "1.0.0",
+    "test-vite-plus-install": "catalog:",
     "test-vite-plus-package": "catalog:",
     "test-vite-plus-package-optional": "catalog:v1",
-    "testnpm2": "^1.0.1"
+    "testnpm2": "catalog:"
   }
 }
 packages:
   - packages/*
 
 catalog:
+  test-vite-plus-install: <semver>
   test-vite-plus-package: <semver>
+  testnpm2: <semver>
 
 catalogs:
   v1:
@@ -209,18 +202,16 @@ catalogs:
 
 > vp add --filter=./packages/utils test-vite-plus-package-optional -O --save-catalog-name v2 && cat packages/utils/package.json pnpm-workspace.yaml # should add other with save-catalog-name
 Running: pnpm --filter ./packages/utils add --save-optional --save-catalog-name=v2 test-vite-plus-package-optional
-.                                        |  WARN  `node_modules` is present. Lockfile only installation will make it out-of-date
 Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "@vite-plus-test/utils",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "test-vite-plus-install": "1.0.0",
+    "test-vite-plus-install": "catalog:",
     "test-vite-plus-package": "catalog:",
-    "testnpm2": "^1.0.1"
+    "testnpm2": "catalog:"
   },
   "optionalDependencies": {
     "test-vite-plus-package-optional": "catalog:v2"
@@ -230,7 +221,9 @@ packages:
   - packages/*
 
 catalog:
+  test-vite-plus-install: <semver>
   test-vite-plus-package: <semver>
+  testnpm2: <semver>
 
 catalogs:
   v1:

@@ -1,27 +1,24 @@
-use petgraph::stable_graph::StableGraph;
+use std::process::ExitStatus;
+
 use vite_package_manager::{
     add::{AddCommandOptions, SaveDependencyType},
     package_manager::PackageManager,
 };
 use vite_path::AbsolutePathBuf;
 
-use crate::{
-    Error, ResolveCommandResult, Workspace,
-    config::ResolvedTask,
-    schedule::{ExecutionPlan, ExecutionSummary},
-};
+use crate::Error;
 
 /// Add command for adding packages to dependencies.
 ///
 /// This command automatically detects the package manager and translates
 /// the add command to the appropriate package manager-specific syntax.
 pub struct AddCommand {
-    workspace_root: AbsolutePathBuf,
+    cwd: AbsolutePathBuf,
 }
 
 impl AddCommand {
-    pub fn new(workspace_root: AbsolutePathBuf) -> Self {
-        Self { workspace_root }
+    pub fn new(cwd: AbsolutePathBuf) -> Self {
+        Self { cwd }
     }
 
     pub async fn execute(
@@ -36,14 +33,10 @@ impl AddCommand {
         global: bool,
         allow_build: Option<&str>,
         pass_through_args: Option<&[String]>,
-    ) -> Result<ExecutionSummary, Error> {
+    ) -> Result<ExitStatus, Error> {
         if packages.is_empty() {
             return Err(Error::NoPackagesSpecified);
         }
-
-        // Detect package manager
-        let package_manager = PackageManager::builder(&self.workspace_root).build().await?;
-        let workspace = Workspace::partial_load(self.workspace_root)?;
 
         let add_command_options = AddCommandOptions {
             packages,
@@ -57,26 +50,11 @@ impl AddCommand {
             allow_build,
             pass_through_args,
         };
-        let resolve_command = package_manager.resolve_add_command(&add_command_options);
 
-        println!("Running: {} {}", resolve_command.bin_path, resolve_command.args.join(" "));
+        // Detect package manager
+        let package_manager = PackageManager::builder(&self.cwd).build().await?;
 
-        // TODO: set cacheable to false
-        let resolved_task = ResolvedTask::resolve_from_builtin_with_command_result(
-            &workspace,
-            "add",
-            resolve_command.args.iter(),
-            ResolveCommandResult { bin_path: resolve_command.bin_path, envs: resolve_command.envs },
-            false,
-            None,
-        )?;
-
-        let mut task_graph: StableGraph<ResolvedTask, ()> = Default::default();
-        task_graph.add_node(resolved_task);
-        let summary = ExecutionPlan::plan(task_graph, false)?.execute(&workspace).await?;
-        workspace.unload().await?;
-
-        Ok(summary)
+        package_manager.run_add_command(&add_command_options, &self.cwd).await
     }
 }
 

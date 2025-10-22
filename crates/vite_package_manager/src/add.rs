@@ -1,7 +1,10 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, process::ExitStatus};
+
+use vite_error::Error;
+use vite_path::AbsolutePath;
 
 use crate::package_manager::{
-    PackageManager, PackageManagerType, ResolveCommandResult, format_path_env,
+    PackageManager, PackageManagerType, ResolveCommandResult, format_path_env, run_command,
 };
 
 /// The type of dependency to save.
@@ -33,6 +36,19 @@ pub struct AddCommandOptions<'a> {
 }
 
 impl PackageManager {
+    /// Run the add command with the package manager.
+    /// Return the exit status of the command.
+    #[must_use]
+    pub async fn run_add_command(
+        &self,
+        options: &AddCommandOptions<'_>,
+        cwd: impl AsRef<AbsolutePath>,
+    ) -> Result<ExitStatus, Error> {
+        let resolve_command = self.resolve_add_command(options);
+        run_command(&resolve_command.bin_path, &resolve_command.args, &resolve_command.envs, cwd)
+            .await
+    }
+
     /// Resolve the add command.
     #[must_use]
     pub fn resolve_add_command(&self, options: &AddCommandOptions) -> ResolveCommandResult {

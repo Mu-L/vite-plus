@@ -45,7 +45,6 @@ devDependencies:
 + testnpm2 <semver>
 
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm9",
   "version": "1.0.0",
@@ -65,7 +64,6 @@ dependencies:
 + test-vite-plus-install <semver>
 
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm9",
   "version": "1.0.0",
@@ -80,7 +78,6 @@ Done in <variable>ms using pnpm v<semver>
 
 [1]> vp add testnpm2 test-vite-plus-install --allow-build=test-vite-plus-install # should error because allow-build is not supported at pnpm@9
 Running: pnpm add --allow-build=test-vite-plus-install testnpm2 test-vite-plus-install
-
 
  ERROR  Unknown option: 'allow-build'
 For help, run: pnpm help add
@@ -98,7 +95,6 @@ devDependencies:
 + test-vite-plus-package <semver> already in devDependencies, was not moved to dependencies.
 
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm9",
   "version": "1.0.0",
@@ -125,7 +121,6 @@ optionalDependencies:
 + test-vite-plus-package-optional <semver>
 
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm9",
   "version": "1.0.0",
@@ -147,7 +142,6 @@ Done in <variable>ms using pnpm v<semver>
 
 > vp add test-vite-plus-package-optional -- --loglevel=warn && cat package.json # support pass through arguments
 Running: pnpm add --loglevel=warn test-vite-plus-package-optional
-
 {
   "name": "command-add-pnpm9",
   "version": "1.0.0",

@@ -4,11 +4,12 @@ use std::{
     fs::{self, File},
     io::{BufReader, Seek, SeekFrom},
     path::Path,
+    process::{ExitStatus, Stdio},
 };
 
 use semver::{Version, VersionReq};
 use serde::{Deserialize, Serialize};
-use tokio::fs::remove_dir_all;
+use tokio::{fs::remove_dir_all, process::Command};
 use vite_error::Error;
 use vite_path::{AbsolutePath, AbsolutePathBuf, RelativePathBuf};
 use vite_str::Str;
@@ -138,8 +139,8 @@ impl PackageManagerBuilder {
 }
 
 impl PackageManager {
-    pub fn builder(workspace_root: impl AsRef<AbsolutePath>) -> PackageManagerBuilder {
-        PackageManagerBuilder::new(workspace_root)
+    pub fn builder(cwd: impl AsRef<AbsolutePath>) -> PackageManagerBuilder {
+        PackageManagerBuilder::new(cwd)
     }
 
     #[must_use]
@@ -598,6 +599,27 @@ pub(crate) fn format_path_env(bin_prefix: impl AsRef<Path>) -> String {
     let mut paths = env::split_paths(&env::var_os("PATH").unwrap_or_default()).collect::<Vec<_>>();
     paths.insert(0, bin_prefix.as_ref().to_path_buf());
     env::join_paths(paths).unwrap().to_string_lossy().to_string()
+}
+
+pub(crate) async fn run_command(
+    bin_name: &str,
+    args: &Vec<String>,
+    envs: &HashMap<String, String>,
+    cwd: impl AsRef<AbsolutePath>,
+) -> Result<ExitStatus, Error> {
+    println!("Running: {} {}", bin_name, args.join(" "));
+
+    // TODO: color support for stdout/stderr
+    let status = Command::new(bin_name)
+        .args(args)
+        .envs(envs)
+        .current_dir(cwd.as_ref())
+        .stdin(Stdio::inherit())
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit())
+        .status()
+        .await?;
+    Ok(status)
 }
 
 #[cfg(test)]

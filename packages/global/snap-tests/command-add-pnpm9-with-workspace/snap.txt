@@ -8,7 +8,6 @@ devDependencies:
 Packages: +<variable>
 +<repeat>
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm9-with-workspace",
   "version": "1.0.0",
@@ -22,14 +21,12 @@ Done in <variable>ms using pnpm v<semver>
 Running: pnpm add --workspace @vite-plus-test/utils
  ERR_PNPM_ADDING_TO_ROOT  Running this command will add the dependency to the workspace root, which might not be what you want - if you really meant it, make it explicit by running this command again with the -w flag (or --workspace-root). If you don't want to see this warning anymore, you may set the ignore-workspace-root-check setting to true.
 
-
 > vp add testnpm2 test-vite-plus-install@1.0.0 --filter app && cat package.json packages/app/package.json packages/utils/package.json # should add packages to packages/app
 Running: pnpm --filter app add testnpm2 test-vite-plus-install@<semver>
 .                                        |  WARN  `node_modules` is present. Lockfile only installation will make it out-of-date
 Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
 .                                        |   +1 +<repeat>
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm9-with-workspace",
   "version": "1.0.0",
@@ -56,7 +53,6 @@ Running: pnpm --filter app add --workspace @vite-plus-test/utils
 .                                        |  WARN  `node_modules` is present. Lockfile only installation will make it out-of-date
 Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm9-with-workspace",
   "version": "1.0.0",
@@ -83,7 +79,6 @@ Done in <variable>ms using pnpm v<semver>
 Running: pnpm --filter * add --save-exact testnpm2 test-vite-plus-install
 Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm9-with-workspace",
   "version": "1.0.0",
@@ -115,7 +110,6 @@ Running: pnpm --filter * add --workspace-root test-vite-plus-package@<semver>
 .                                        |   +1 +<repeat>
 Progress: resolved <variable>, reused <variable>, downloaded <variable>, added <variable>, done
 Done in <variable>ms using pnpm v<semver>
-
 {
   "name": "command-add-pnpm9-with-workspace",
   "version": "1.0.0",
@@ -152,14 +146,12 @@ packages:
 [1]> vp add --filter app test-vite-plus-package-optional --save-catalog-name v1 # should error because save-catalog-name is not supported at pnpm@9
 Running: pnpm --filter app add --save-catalog-name=v1 test-vite-plus-package-optional
 
-
  ERROR  Unknown option: 'save-catalog-name'
 Did you mean 'save-optional'? Use "--config.unknown=value" to force an unknown option.
 For help, run: pnpm help add
 
 [1]> vp add --filter=./packages/utils test-vite-plus-package-optional -O --save-catalog v2 # should error because save-catalog is not supported at pnpm@9
 Running: pnpm --filter ./packages/utils add --save-optional --save-catalog test-vite-plus-package-optional v2
-
 
  ERROR  Unknown option: 'save-catalog'
 Did you mean 'save-exact', or 'save-prod'? Use "--config.unknown=value" to force an unknown option.

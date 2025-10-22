@@ -241,7 +241,7 @@ async fn execute_add_command(
     global: bool,
     allow_build: Option<&str>,
     pass_through_args: Option<&[String]>,
-) -> Result<ExecutionSummary, Error> {
+) -> Result<ExitStatus, Error> {
     let save_dependency_type = if save_dev {
         Some(SaveDependencyType::Dev)
     } else if save_peer {
@@ -342,6 +342,37 @@ pub struct ResolvedUniversalViteConfig {
     pub fmt: Option<FmtConfig>,
 }
 
+#[cfg(unix)]
+fn fix_stdio_streams() {
+    // libuv may mark stdin/stdout/stderr as close-on-exec.
+    // As a workaround, we clear the FD_CLOEXEC flag on these file descriptors to prevent them from being closed when spawning child processes.
+    //
+    // For details see https://github.com/libuv/libuv/issues/2062
+    // Fixed by reference from https://github.com/electron/electron/pull/15555
+
+    use std::os::unix::io::RawFd;
+
+    use nix::libc;
+
+    unsafe {
+        // Helper function to clear FD_CLOEXEC flag on a file descriptor
+        let clear_cloexec = |fd: RawFd| {
+            // Get current file descriptor flags
+            let flags = libc::fcntl(fd, libc::F_GETFD);
+            if flags >= 0 {
+                // Clear the FD_CLOEXEC flag
+                let new_flags = flags & !libc::FD_CLOEXEC;
+                libc::fcntl(fd, libc::F_SETFD, new_flags);
+            }
+        };
+
+        // Clear FD_CLOEXEC on stdin, stdout, stderr
+        clear_cloexec(libc::STDIN_FILENO);
+        clear_cloexec(libc::STDOUT_FILENO);
+        clear_cloexec(libc::STDERR_FILENO);
+    }
+}
+
 /// Main entry point for vite-plus task execution.
 ///
 /// # Execution Flow
@@ -409,6 +440,9 @@ pub async fn main<
         >,
     >,
 ) -> Result<std::process::ExitStatus, Error> {
+    #[cfg(unix)]
+    fix_stdio_streams();
+
     // Auto-install dependencies if needed, but skip for install command itself, or if `VITE_DISABLE_AUTO_INSTALL=1` is set.
     if !matches!(args.commands, Commands::Install { .. })
         && std::env::var_os("VITE_DISABLE_AUTO_INSTALL") != Some("1".into())
@@ -534,7 +568,7 @@ pub async fn main<
             allow_build,
             pass_through_args,
         } => {
-            execute_add_command(
+            let exit_status = execute_add_command(
                 cwd,
                 packages,
                 *save_prod,
@@ -551,7 +585,8 @@ pub async fn main<
                 allow_build.as_deref(),
                 pass_through_args.as_deref(),
             )
-            .await?
+            .await?;
+            return Ok(exit_status);
         }
         Commands::Install { args } => {
             // Check if args contain packages - if yes, redirect to Add command
@@ -573,7 +608,7 @@ pub async fn main<
                 pass_through_args,
             }) = parse_install_as_add(args)
             {
-                execute_add_command(
+                let exit_status = execute_add_command(
                     cwd,
                     &packages,
                     save_prod,
@@ -590,7 +625,8 @@ pub async fn main<
                     allow_build.as_deref(),
                     pass_through_args.as_deref(),
                 )
-                .await?
+                .await?;
+                return Ok(exit_status);
             } else {
                 install::InstallCommand::builder(cwd).build().execute(args).await?
             }

@@ -30,6 +30,9 @@ export function replaceUnstableOutput(output: string, cwd?: string) {
     // ignore yarn YN0013, because it's unstable output, only exists on CI environment
     // ➤ YN0013: │ A package was added to the project (+ 0.7 KiB).
     .replaceAll(/➤ YN0013:[^\n]+\n/g, '')
+    // ignore npm warn
+    // npm warn Unknown env config "recursive". This will stop working in the next major version of npm
+    .replaceAll(/npm warn Unknown env config .+?\n/g, '')
     // replace size for tsdown
     .replaceAll(/ \d+(\.\d+)? ([km]B)/g, ' <variable> $2');
 }

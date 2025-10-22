@@ -2,7 +2,6 @@
 Running: npm install --include-workspace-root --save-dev --no-audit testnpm2
 
 added 3 packages in <variable>ms
-
 {
   "name": "command-add-npm10-with-workspace",
   "version": "1.0.0",
@@ -27,7 +26,6 @@ added 3 packages in <variable>ms
 Running: npm install --no-audit @vite-plus-test/utils
 
 up to date in <variable>ms
-
 {
   "name": "command-add-npm10-with-workspace",
   "version": "1.0.0",
@@ -55,7 +53,6 @@ up to date in <variable>ms
 Running: npm install --workspace app --no-audit testnpm2 test-vite-plus-install@<semver>
 
 added 1 package in <variable>ms
-
 {
   "name": "command-add-npm10-with-workspace",
   "version": "1.0.0",
@@ -87,7 +84,6 @@ added 1 package in <variable>ms
 Running: npm install --workspace app --no-audit @vite-plus-test/utils
 
 up to date in <variable>ms
-
 {
   "name": "command-add-npm10-with-workspace",
   "version": "1.0.0",
@@ -120,7 +116,6 @@ up to date in <variable>ms
 Running: npm install --workspace * --no-audit testnpm2 test-vite-plus-install@<semver>
 
 up to date in <variable>ms
-
 {
   "name": "command-add-npm10-with-workspace",
   "version": "1.0.0",
@@ -157,7 +152,6 @@ up to date in <variable>ms
 Running: npm install --workspace * --include-workspace-root --save-exact --no-audit testnpm2 test-vite-plus-install@<semver>
 
 up to date in <variable>ms
-
 {
   "name": "command-add-npm10-with-workspace",
   "version": "1.0.0",
@@ -195,7 +189,6 @@ up to date in <variable>ms
 Running: npm install --workspace * --include-workspace-root --no-audit test-vite-plus-package@<semver>
 
 added 1 package in <variable>ms
-
 {
   "name": "command-add-npm10-with-workspace",
   "version": "1.0.0",

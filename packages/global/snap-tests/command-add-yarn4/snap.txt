@@ -46,7 +46,6 @@ Running: yarn add --dev testnpm2
 ➤ YN0000: ┌ Link step
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in <variable>ms <variable>ms
-
 {
   "name": "command-add-yarn4",
   "version": "1.0.0",
@@ -67,7 +66,6 @@ Running: yarn add testnpm2 test-vite-plus-install
 ➤ YN0000: ┌ Link step
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in <variable>ms <variable>ms
-
 {
   "name": "command-add-yarn4",
   "version": "1.0.0",
@@ -90,7 +88,6 @@ Running: yarn add --peer test-vite-plus-package@<semver>
 ➤ YN0000: ┌ Link step
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in <variable>ms <variable>ms
-
 {
   "name": "command-add-yarn4",
   "version": "1.0.0",
@@ -117,7 +114,6 @@ Running: yarn add --optional test-vite-plus-package-optional
 ➤ YN0000: ┌ Link step
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in <variable>ms <variable>ms
-
 {
   "name": "command-add-yarn4",
   "version": "1.0.0",
@@ -146,7 +142,6 @@ Running: yarn add --tilde test-vite-plus-package-optional
 ➤ YN0000: ┌ Link step
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in <variable>ms <variable>ms
-
 {
   "name": "command-add-yarn4",
   "version": "1.0.0",

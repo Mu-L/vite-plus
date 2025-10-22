@@ -39,7 +39,6 @@ Options:
 Running: npm install --save-dev --no-audit testnpm2
 
 added 1 package in <variable>ms
-
 {
   "name": "command-add-npm11",
   "version": "1.0.0",
@@ -48,12 +47,12 @@ added 1 package in <variable>ms
     "testnpm2": "^1.0.1"
   }
 }
+
 
 > vp add testnpm2 test-vite-plus-install --allow-build=test-vite-plus-install -- --no-audit && cat package.json # should add packages to dependencies
 Running: npm install --no-audit testnpm2 test-vite-plus-install
 
 added 1 package in <variable>ms
-
 {
   "name": "command-add-npm11",
   "version": "1.0.0",
@@ -65,12 +64,12 @@ added 1 package in <variable>ms
     "test-vite-plus-install": "^1.0.0"
   }
 }
+
 
 > vp install test-vite-plus-package@1.0.0 --save-peer -- --no-audit && cat package.json # should install package alias for add
 Running: npm install --save-peer --no-audit test-vite-plus-package@<semver>
 
 added 1 package in <variable>ms
-
 {
   "name": "command-add-npm11",
   "version": "1.0.0",
@@ -85,12 +84,12 @@ added 1 package in <variable>ms
     "test-vite-plus-package": "^1.0.0"
   }
 }
+
 
 > vp add test-vite-plus-package-optional -O -- --no-audit && cat package.json # should add package as optional dependencies
 Running: npm install --save-optional --no-audit test-vite-plus-package-optional
 
 added 1 package in <variable>ms
-
 {
   "name": "command-add-npm11",
   "version": "1.0.0",
@@ -108,12 +107,12 @@ added 1 package in <variable>ms
     "test-vite-plus-package-optional": "^1.0.0"
   }
 }
+
 
 > vp add test-vite-plus-package-optional -- --loglevel=warn --no-audit && cat package.json # support pass through arguments
 Running: npm install --loglevel=warn --no-audit test-vite-plus-package-optional
 
 up to date in <variable>ms
-
 {
   "name": "command-add-npm11",
   "version": "1.0.0",
@@ -131,3 +130,4 @@ up to date in <variable>ms
     "test-vite-plus-package-optional": "^1.0.0"
   }
 }
+

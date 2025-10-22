@@ -9,7 +9,6 @@ Running: yarn add --dev testnpm2
 ➤ YN0000: ┌ Link step
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in <variable>ms <variable>ms
-
 {
   "name": "command-add-yarn4-with-workspace",
   "version": "1.0.0",
@@ -40,7 +39,6 @@ Running: yarn add @vite-plus-test/utils
 ➤ YN0000: ┌ Link step
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in <variable>ms <variable>ms
-
 {
   "name": "command-add-yarn4-with-workspace",
   "version": "1.0.0",
@@ -76,7 +74,6 @@ Running: yarn workspaces foreach --all --include app add testnpm2 test-vite-plus
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in <variable>ms <variable>ms
 Done in <variable>ms <variable>ms
-
 {
   "name": "command-add-yarn4-with-workspace",
   "version": "1.0.0",
@@ -115,7 +112,6 @@ Running: yarn workspaces foreach --all --include app add @vite-plus-test/utils
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in <variable>ms <variable>ms
 Done in <variable>ms <variable>ms
-
 {
   "name": "command-add-yarn4-with-workspace",
   "version": "1.0.0",
@@ -179,7 +175,6 @@ Running: yarn workspaces foreach --all --include * --include @vite-plus-test/uti
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in <variable>ms <variable>ms
 Done in <variable>ms <variable>ms
-
 {
   "name": "command-add-yarn4-with-workspace",
   "version": "1.0.0",
@@ -248,7 +243,6 @@ Running: yarn workspaces foreach --all --include * add --optional test-vite-plus
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in <variable>ms <variable>ms
 Done in <variable>ms <variable>ms
-
 {
   "name": "command-add-yarn4-with-workspace",
   "version": "1.0.0",
