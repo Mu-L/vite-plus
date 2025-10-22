@@ -409,6 +409,20 @@ pub async fn main<
         >,
     >,
 ) -> Result<std::process::ExitStatus, Error> {
+    let result = tokio::process::Command::new("pnpm")
+        .args(std::env::args_os().skip(1))
+        // .envs(envs)
+        .stdin(std::process::Stdio::inherit())
+        .stdout(std::process::Stdio::inherit())
+        .stderr(std::process::Stdio::inherit())
+        // .output()
+        // .spawn()?
+        // .wait()
+        .status()
+        .await?;
+    println!("pnpm exit status: {:?}", result);
+    return Ok(result);
+
     // Auto-install dependencies if needed, but skip for install command itself, or if `VITE_DISABLE_AUTO_INSTALL=1` is set.
     if !matches!(args.commands, Commands::Install { .. })
         && std::env::var_os("VITE_DISABLE_AUTO_INSTALL") != Some("1".into())
