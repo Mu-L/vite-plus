@@ -7089,7 +7089,6 @@ version = "0.0.0"
 dependencies = [
  "chrono",
  "clap",
- "directories",
  "serde",
  "serde_json",
  "tempfile",
