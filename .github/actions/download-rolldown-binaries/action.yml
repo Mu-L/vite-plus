@@ -20,32 +20,29 @@ runs:
     - name: Install previous release
       shell: bash
       run: |
-        if ${{ runner.os == 'Windows' }}; then
-          export TARGET="win32-x64-msvc"
-        elif ${{ runner.os == 'Linux' }}; then
-          export TARGET="linux-x64-gnu"
-        elif ${{ runner.os == 'macOS' }}; then
-          export TARGET="darwin-arm64"
-        fi
-
         export VERSION=$(npm view --json rolldown | jq -r '.version')
-        npm pack "@rolldown/binding-${TARGET}@${VERSION}"
-        tar -xzf "rolldown-binding-${TARGET}-${VERSION}.tgz"
-        if [ -d "./rolldown/packages/rolldown/src" ]; then
-          cp "./package/rolldown-binding.${TARGET}.node" ./rolldown/packages/rolldown/src
-          ls ./rolldown/packages/rolldown/src
-        fi
+
+        # Download binaries for all CI platforms
+        TARGETS="linux-x64-gnu win32-x64-msvc darwin-arm64 darwin-x64"
+        for TARGET in $TARGETS; do
+          echo "Downloading @rolldown/binding-${TARGET}@${VERSION}..."
+          npm pack "@rolldown/binding-${TARGET}@${VERSION}" || echo "Warning: failed to download ${TARGET}"
+          if [ -f "rolldown-binding-${TARGET}-${VERSION}.tgz" ]; then
+            tar -xzf "rolldown-binding-${TARGET}-${VERSION}.tgz"
+            if [ -d "./rolldown/packages/rolldown/src" ]; then
+              cp "./package/rolldown-binding.${TARGET}.node" ./rolldown/packages/rolldown/src
+            fi
+            rm -rf package "rolldown-binding-${TARGET}-${VERSION}.tgz"
+          fi
+        done
+
+        echo "Downloaded binaries:"
+        ls ./rolldown/packages/rolldown/src/rolldown-binding.*.node 2>/dev/null || echo "No binaries found in rolldown src dir"
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       if: ${{ inputs.upload == 'true' }}
       with:
         name: rolldown-binaries
-        path: ./package/rolldown-binding.*.node
+        path: ./rolldown/packages/rolldown/src/rolldown-binding.*.node
         if-no-files-found: error
-
-    - name: Clean up
-      shell: bash
-      run: |
-        rm -rf package
-        rm *.tgz
