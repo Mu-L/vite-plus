@@ -43,6 +43,11 @@ function error(message: string): never {
   process.exit(1);
 }
 
+const getMajor = (range: string): number | null => {
+  const match = range.match(/(\d+)\./);
+  return match ? parseInt(match[1], 10) : null;
+};
+
 function execCommand(command: string, cwd?: string): string {
   try {
     return execSync(command, {
@@ -457,9 +462,7 @@ function mergeSemverVersions(
     return isExact1 ? v1 : v2;
   }
 
-  // Handle npm: prefix
   if (v1.startsWith('npm:') || v2.startsWith('npm:')) {
-    // If one has npm: prefix, prefer the non-npm version or return the first one
     if (!v1.startsWith('npm:')) {
       return v1;
     }
@@ -469,7 +472,6 @@ function mergeSemverVersions(
     return v1;
   }
 
-  // Parse version ranges
   const range1 = semver.validRange(v1);
   const range2 = semver.validRange(v2);
 
@@ -477,12 +479,6 @@ function mergeSemverVersions(
     log(`Warning: Could not parse semver for ${packageName}: ${v1}, ${v2}. Using ${v1}`);
     return v1;
   }
-
-  // Get the major versions from the ranges
-  const getMajor = (range: string): number | null => {
-    const match = range.match(/(\d+)\./);
-    return match ? parseInt(match[1], 10) : null;
-  };
 
   const major1 = getMajor(v1);
   const major2 = getMajor(v2);

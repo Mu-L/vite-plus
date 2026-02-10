@@ -41,14 +41,14 @@ function fadeToColor(count: number, endRgb: RGB) {
   return colors;
 }
 
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
 function gradient(count: number, startRgb: RGB, endRgb: RGB) {
   const n = Math.max(count, 1);
   const denom = Math.max(n - 1, 1);
 
   const [sr, sg, sb] = startRgb;
   const [er, eg, eb] = endRgb;
-
-  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
   const colors: Array<RGB> = [];
   for (let i = 0; i < n; i++) {
@@ -79,6 +79,17 @@ function colorize(text: string, colors: Array<RGB>) {
   }
   return out + RESET;
 }
+
+const to8bit = (hex: string) => {
+  if (hex.length === 2) {
+    return parseInt(hex, 16);
+  }
+  if (hex.length === 4) {
+    return Math.round((parseInt(hex, 16) / 0xffff) * 255);
+  }
+  const max = Math.pow(16, hex.length) - 1;
+  return Math.round((parseInt(hex, 16) / max) * 255);
+};
 
 async function getForegroundColor(): Promise<null | RGB> {
   const stdin = process.stdin;
@@ -127,17 +138,6 @@ async function getForegroundColor(): Promise<null | RGB> {
       flushTimer = setTimeout(() => {
         buffer = '';
       }, 50);
-    };
-
-    const to8bit = (hex: string) => {
-      if (hex.length === 2) {
-        return parseInt(hex, 16);
-      }
-      if (hex.length === 4) {
-        return Math.round((parseInt(hex, 16) / 0xffff) * 255);
-      }
-      const max = Math.pow(16, hex.length) - 1;
-      return Math.round((parseInt(hex, 16) / max) * 255);
     };
 
     const onData = (data: string) => {

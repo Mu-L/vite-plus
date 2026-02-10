@@ -19,6 +19,11 @@ function error(message: string): never {
   process.exit(1);
 }
 
+const getMajor = (range: string): number | null => {
+  const match = range.match(/(\d+)\./);
+  return match ? parseInt(match[1], 10) : null;
+};
+
 function mergeSemverVersions(v1: string, v2: string, packageName: string): string {
   // Handle special cases
   if (v1 === v2) {
@@ -69,7 +74,6 @@ function mergeSemverVersions(v1: string, v2: string, packageName: string): strin
     }
   }
 
-  // Parse version ranges
   const range1 = semver.validRange(v1);
   const range2 = semver.validRange(v2);
 
@@ -77,12 +81,6 @@ function mergeSemverVersions(v1: string, v2: string, packageName: string): strin
     log(`Warning: Could not parse semver for ${packageName}: ${v1}, ${v2}. Using ${v1}`);
     return v1;
   }
-
-  // Get the major versions from the ranges
-  const getMajor = (range: string): number | null => {
-    const match = range.match(/(\d+)\./);
-    return match ? parseInt(match[1], 10) : null;
-  };
 
   const major1 = getMajor(v1);
   const major2 = getMajor(v2);
