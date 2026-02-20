@@ -4,8 +4,8 @@
   },
   "ignoredPlatforms": ["win32"],
   "commands": [
-    "vp env use --silent-if-unchanged # first call - should show message",
-    "VITE_PLUS_NODE_VERSION=20.18.0 vp env use --silent-if-unchanged # same version - should be silent",
-    "VITE_PLUS_NODE_VERSION=22.0.0 vp env use --silent-if-unchanged # different version - should show message"
+    "vp env use --silent-if-unchanged --no-install # first call - should show message",
+    "VITE_PLUS_NODE_VERSION=20.18.0 vp env use --silent-if-unchanged --no-install # same version - should be silent",
+    "VITE_PLUS_NODE_VERSION=22.0.0 vp env use --silent-if-unchanged --no-install # different version - should show message"
   ]
 }
