@@ -7054,7 +7054,6 @@ dependencies = [
  "serde_json",
  "tokio",
  "tracing",
- "tracing-subscriber",
  "vite_command",
  "vite_error",
  "vite_install",
