@@ -343,14 +343,14 @@ pub async fn download_runtime_for_project(project_path: &AbsolutePath) -> Result
     let provider = NodeProvider::new();
     let cache_dir = crate::cache::get_cache_dir()?;
 
-    // Use resolve_node_version to find the version (no directory walking for project downloads)
-    let resolution = resolve_node_version(project_path, false).await?;
+    // Resolve version from the project directory, walking up to inherit from ancestors
+    let resolution = resolve_node_version(project_path, true).await?;
 
     // Validate the version from the resolved source
     let version_req =
         resolution.as_ref().and_then(|r| normalize_version(&r.version, &r.source.to_string()));
 
-    // For compatibility checking, we need to read all sources
+    // For compatibility checking, we need to read all sources from the local package.json
     let package_json_path = project_path.join("package.json");
     let pkg = read_package_json(&package_json_path).await?;
 
@@ -662,7 +662,7 @@ mod tests {
 
         let runtime = download_runtime_for_project(&temp_path).await.unwrap();
 
-        // Should download latest Node.js
+        // Should download Node.js
         assert_eq!(runtime.runtime_type(), JsRuntimeType::Node);
 
         // Should have a valid version
@@ -670,10 +670,13 @@ mod tests {
         let parsed = node_semver::Version::parse(version).unwrap();
         assert!(parsed.major >= 20);
 
-        // Should write resolved version to .node-version
-        let node_version_content =
-            tokio::fs::read_to_string(temp_path.join(".node-version")).await.unwrap();
-        assert_eq!(node_version_content, format!("{version}\n"));
+        // .node-version is written only if no ancestor has one (write-back is
+        // suppressed when an ancestor .node-version exists, e.g. in a monorepo)
+        if tokio::fs::try_exists(temp_path.join(".node-version")).await.unwrap() {
+            let node_version_content =
+                tokio::fs::read_to_string(temp_path.join(".node-version")).await.unwrap();
+            assert_eq!(node_version_content, format!("{version}\n"));
+        }
 
         // package.json should remain unchanged
         let pkg_content = tokio::fs::read_to_string(temp_path.join("package.json")).await.unwrap();
@@ -700,10 +703,13 @@ mod tests {
         let runtime = download_runtime_for_project(&temp_path).await.unwrap();
         let version = runtime.version();
 
-        // Should write resolved version to .node-version
-        let node_version_content =
-            tokio::fs::read_to_string(temp_path.join(".node-version")).await.unwrap();
-        assert_eq!(node_version_content, format!("{version}\n"));
+        // .node-version is written only if no ancestor has one (write-back is
+        // suppressed when an ancestor .node-version exists, e.g. in a monorepo)
+        if tokio::fs::try_exists(temp_path.join(".node-version")).await.unwrap() {
+            let node_version_content =
+                tokio::fs::read_to_string(temp_path.join(".node-version")).await.unwrap();
+            assert_eq!(node_version_content, format!("{version}\n"));
+        }
 
         // package.json should remain unchanged
         let pkg_content = tokio::fs::read_to_string(temp_path.join("package.json")).await.unwrap();
@@ -771,6 +777,31 @@ mod tests {
 
         // Should download latest Node.js
         assert_eq!(runtime.runtime_type(), JsRuntimeType::Node);
+    }
+
+    #[tokio::test]
+    async fn test_download_runtime_for_project_inherits_parent_node_version() {
+        let temp_dir = TempDir::new().unwrap();
+        let temp_path = AbsolutePathBuf::new(temp_dir.path().to_path_buf()).unwrap();
+
+        // Write .node-version in root (simulating monorepo root)
+        tokio::fs::write(temp_path.join(".node-version"), "20.18.0\n").await.unwrap();
+
+        // Create a sub-package directory with a minimal package.json (no engines/devEngines)
+        let subdir = temp_path.join("packages").join("foo");
+        tokio::fs::create_dir_all(&subdir).await.unwrap();
+        tokio::fs::write(subdir.join("package.json"), r#"{"name": "foo"}"#).await.unwrap();
+
+        let runtime = download_runtime_for_project(&subdir).await.unwrap();
+
+        // Should inherit version from parent's .node-version
+        assert_eq!(runtime.version(), "20.18.0");
+
+        // Should NOT write .node-version in the sub-package
+        assert!(
+            !tokio::fs::try_exists(subdir.join(".node-version")).await.unwrap(),
+            ".node-version should not be written in sub-package when parent already has one"
+        );
     }
 
     /// Integration test that downloads a real Node.js version

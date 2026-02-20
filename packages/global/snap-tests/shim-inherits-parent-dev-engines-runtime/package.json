@@ -1,0 +1,11 @@
+{
+  "name": "shim-inherits-parent-dev-engines-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "20.18.0"
+    }
+  }
+}
