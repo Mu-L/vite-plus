@@ -39,7 +39,9 @@ if (command === 'create') {
   if (isGlobalCli) {
     const localPkgRoot = findLocalVitePlus(process.cwd());
     if (localPkgRoot) {
-      // Delegate to the project's local vite-plus
+      // Delegate to the project's local vite-plus.
+      // Clear VITE_PLUS_CLI_BIN so the local bin.js runs as a local CLI, not global.
+      delete process.env.VITE_PLUS_CLI_BIN;
       await import(pathToFileURL(join(localPkgRoot, 'dist', 'bin.js')).href);
     } else {
       // No local vite-plus — fall back to the global installation
