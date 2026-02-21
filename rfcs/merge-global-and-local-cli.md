@@ -59,11 +59,53 @@ packages/cli/
 
 ### Command Routing
 
-The Rust `vp` binary (`crates/vite_global_cli/`) routes commands in three categories:
+The Rust `vp` binary (`crates/vite_global_cli/`) routes commands in two categories:
+
+```
+                       vp <command>
+                            │
+              ┌─────────────┴──────────────┐
+              │                            │
+              ▼                            ▼
+     ┌────────────────┐         ┌────────────────┐
+     │   Category A   │         │   Category B   │
+     │    Pkg Mgr     │         │   JavaScript   │
+     │    (Rust)      │         │   (Node.js)    │
+     └───────┬────────┘         └───────┬────────┘
+             │                          │
+       Handled in                oxc_resolver finds
+       Rust directly             local vite-plus
+             │                          │
+             ▼                    ┌─────┴─────┐
+     ┌────────────────┐          │  found?   │
+     │ install        │          └─────┬─────┘
+     │ add            │           yes ╱ ╲ no
+     │ remove         │             ╱     ╲
+     │ update         │            ▼       ▼
+     │ ...            │      ┌────────┐ ┌────────┐
+     └────────────────┘      │ local  │ │ global │
+                             │ bin.js │ │ bin.js │
+                             └───┬────┘ └───┬────┘
+                                 └─────┬────┘
+                                       │
+                                       ▼
+                              ┌────────────────┐
+                              │     bin.ts      │
+                              │   routes to:    │
+                              ├────────────────┤
+                              │ build, test,    │
+                              │ lint, fmt, run  │
+                              │   → NAPI        │
+                              ├────────────────┤
+                              │ create, migrate │
+                              │ --version       │
+                              │   → dist/       │
+                              │     global/*.js │
+                              └────────────────┘
+```
 
 - **Category A (Package Manager)**: `install`, `add`, `remove`, `update`, etc. — Handled directly in Rust
-- **Category B (Global JS)**: `create`, `migrate`, `--version` — Rust calls `dist/bin.js` with the command name, which dynamically imports the rolldown-bundled module from `dist/global/`
-- **Category C (Local CLI)**: `build`, `test`, `lint`, `fmt`, `run`, etc. — Rust uses `oxc_resolver` to find the project's local `vite-plus/dist/bin.js` and runs it directly. Falls back to the global installation's `dist/bin.js` if no local installation exists.
+- **Category B (JavaScript)**: All other commands (`build`, `test`, `lint`, `create`, `migrate`, `--version`, etc.) — Rust uses `oxc_resolver` to find the project's local `vite-plus/dist/bin.js` and runs it. Falls back to the global installation's `dist/bin.js` if no local installation exists. The unified `bin.ts` entry point then routes to either NAPI bindings (task commands) or rolldown-bundled modules in `dist/global/` (create, migrate, version).
 
 ### Local vite-plus Resolution (Rust)
 

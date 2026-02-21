@@ -1,15 +1,14 @@
-//! Version command (Category B: JS Script Command).
+//! Version command (Category B: JavaScript Command).
 
 use std::process::ExitStatus;
 
 use vite_path::AbsolutePathBuf;
 
-use crate::{error::Error, js_executor::JsExecutor};
+use crate::error::Error;
 
-/// Execute the `--version` command by delegating to the bundled JavaScript implementation.
+/// Execute the `--version` command by delegating to local or global vite-plus.
 pub async fn execute(cwd: AbsolutePathBuf) -> Result<ExitStatus, Error> {
-    let mut executor = JsExecutor::new(None);
-    executor.execute_cli_script("bin.js", "--version", &[], &cwd).await
+    super::delegate::execute(cwd, "--version", &[]).await
 }
 
 #[cfg(test)]
