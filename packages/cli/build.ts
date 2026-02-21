@@ -2,11 +2,10 @@
  * Build script for vite-plus CLI package
  *
  * This script performs five main tasks:
- * 1. buildCli() - Compiles TypeScript sources (local CLI)
- * 2. buildGlobalEntry() - Bundles global CLI entry via rolldown
- * 3. buildNapiBinding() - Builds the native Rust binding via NAPI
- * 4. syncCorePackageExports() - Creates shim files to re-export from @voidzero-dev/vite-plus-core
- * 5. syncTestPackageExports() - Creates shim files to re-export from @voidzero-dev/vite-plus-test
+ * 1. buildCli() - Compiles TypeScript sources (local + global CLI)
+ * 2. buildNapiBinding() - Builds the native Rust binding via NAPI
+ * 3. syncCorePackageExports() - Creates shim files to re-export from @voidzero-dev/vite-plus-core
+ * 4. syncTestPackageExports() - Creates shim files to re-export from @voidzero-dev/vite-plus-test
  *
  * The sync functions allow this package to be a drop-in replacement for 'vite' by
  * re-exporting all the same subpaths (./client, ./types/*, etc.) while delegating
@@ -16,7 +15,6 @@
  * Native binding is built first because TypeScript may depend on generated binding types.
  */
 
-import { execFileSync } from 'node:child_process';
 import { existsSync, globSync, readdirSync, statSync } from 'node:fs';
 import { copyFile, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -56,7 +54,6 @@ const napiArgs = process.argv
 
 if (!skipTs) {
   await buildCli();
-  await buildGlobalEntry();
 }
 // Build native first - TypeScript may depend on the generated binding types
 if (!skipNative) {
@@ -158,16 +155,7 @@ async function buildCli() {
   const program = createProgram({
     rootNames: globSync('src/**/*.{ts,cts}', {
       cwd: projectDir,
-      exclude: [
-        '**/*/__tests__',
-        'src/global-entry.ts',
-        'src/create/**',
-        'src/migration/**',
-        'src/local/**',
-        'src/version.ts',
-        'src/global-utils/**',
-        'src/global-types/**',
-      ],
+      exclude: ['**/*/__tests__'],
     }),
     options,
     host,
@@ -179,13 +167,6 @@ async function buildCli() {
     console.error(formatDiagnostics(diagnostics, host));
     process.exit(1);
   }
-}
-
-async function buildGlobalEntry() {
-  execFileSync('npx', ['rolldown', '-c', 'rolldown.config.ts'], {
-    cwd: projectDir,
-    stdio: 'inherit',
-  });
 }
 
 /**

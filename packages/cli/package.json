@@ -322,7 +322,6 @@
     "glob": "catalog:",
     "minimatch": "catalog:",
     "mri": "catalog:",
-    "rolldown": "workspace:*",
     "rolldown-plugin-dts": "catalog:",
     "semver": "catalog:",
     "tsdown": "catalog:",

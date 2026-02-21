@@ -222,7 +222,7 @@ impl JsExecutor {
 
         // Get the JS entry point (dist/index.js)
         let scripts_dir = self.get_scripts_dir()?;
-        let entry_point = scripts_dir.join("global-entry.js");
+        let entry_point = scripts_dir.join("bin.js");
 
         tracing::debug!("Delegating to local CLI via JS entry point: {:?} {:?}", entry_point, args);
 

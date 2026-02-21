@@ -3,9 +3,9 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { styleText } from 'node:util';
 
-import { VITE_PLUS_NAME } from './global-utils/constants.ts';
-import { detectPackageMetadata } from './global-utils/package.ts';
-import { getVitePlusHeader, headline, log } from './global-utils/terminal.ts';
+import { VITE_PLUS_NAME } from './global-utils/constants.js';
+import { detectPackageMetadata } from './global-utils/package.js';
+import { getVitePlusHeader, headline, log } from './global-utils/terminal.js';
 
 const require = createRequire(import.meta.url);
 
