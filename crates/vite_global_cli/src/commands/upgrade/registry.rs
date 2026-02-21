@@ -111,7 +111,7 @@ mod tests {
     #[test]
     fn test_all_platform_suffixes_match_published_packages() {
         // These are the actual published optionalDependencies keys
-        // (from packages/global/publish-native-addons.ts RUST_TARGETS keys)
+        // (from packages/cli/publish-native-addons.ts RUST_TARGETS keys)
         let published_suffixes = [
             "darwin-arm64",
             "darwin-x64",

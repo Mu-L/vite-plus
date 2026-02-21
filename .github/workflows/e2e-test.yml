@@ -108,7 +108,6 @@ jobs:
           cd packages/core && pnpm pack --pack-destination ../../tmp/tgz && cd ../..
           cd packages/test && pnpm pack --pack-destination ../../tmp/tgz && cd ../..
           cd packages/cli && pnpm pack --pack-destination ../../tmp/tgz && cd ../..
-          cd packages/global && pnpm pack --pack-destination ../../tmp/tgz && cd ../..
           ls -la tmp/tgz
 
       - name: Upload tgz artifacts

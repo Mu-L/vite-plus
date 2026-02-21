@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - 'packages/global/install.sh'
-      - 'packages/global/install.ps1'
+      - 'packages/cli/install.sh'
+      - 'packages/cli/install.ps1'
       - '.github/workflows/test-standalone-install.yml'
 
 concurrency:
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Run install.sh
-        run: cat packages/global/install.sh | bash
+        run: cat packages/cli/install.sh | bash
 
       - name: Verify installation
         working-directory: ${{ runner.temp }}
@@ -131,7 +131,7 @@ jobs:
             ubuntu:20.04 bash -c "
               ls -al ~/
               apt-get update && apt-get install -y curl ca-certificates
-              cat /workspace/packages/global/install.sh | bash
+              cat /workspace/packages/cli/install.sh | bash
               if [ -f ~/.profile ]; then
                 source ~/.profile
               elif [ -f ~/.bashrc ]; then
@@ -185,7 +185,7 @@ jobs:
       - name: Run install.ps1
         shell: pwsh
         run: |
-          & ./packages/global/install.ps1
+          & ./packages/cli/install.ps1
 
       - name: Set PATH
         shell: bash

@@ -126,9 +126,9 @@ runs:
       shell: bash
       if: inputs.print-after-build == 'true'
       run: |
-        pnpm vite -h
-        pnpm vite run -h
-        pnpm vite lint -h
-        pnpm vite test -h
-        pnpm vite build -h
-        pnpm vite fmt -h
+        pnpm vp -h
+        pnpm vp run -h
+        pnpm vp lint -h
+        pnpm vp test -h
+        pnpm vp build -h
+        pnpm vp fmt -h
