@@ -37,5 +37,6 @@ export default defineConfig({
   output: {
     format: 'esm',
     dir: './dist/global',
+    cleanDir: true,
   },
 });

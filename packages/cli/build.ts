@@ -17,7 +17,7 @@
  */
 
 import { execSync } from 'node:child_process';
-import { existsSync, globSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, globSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { copyFile, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -184,6 +184,39 @@ function buildGlobalModules() {
     cwd: projectDir,
     stdio: 'inherit',
   });
+  validateGlobalBundleExternals();
+}
+
+/**
+ * Scan rolldown output for unbundled workspace package imports.
+ *
+ * Rolldown silently externalizes imports it can't resolve (no error, no warning).
+ * If a workspace package's dist doesn't exist at bundle time (build order race,
+ * clean checkout, etc.), the bare specifier stays in the output. Since these
+ * packages are devDependencies — not installed in the global CLI's node_modules —
+ * this causes a runtime ERR_MODULE_NOT_FOUND crash.
+ *
+ * Fail the build loudly instead of producing a broken install.
+ */
+function validateGlobalBundleExternals() {
+  const globalDir = join(projectDir, 'dist/global');
+  const files = globSync('*.js', { cwd: globalDir });
+  const errors: string[] = [];
+
+  for (const file of files) {
+    const content = readFileSync(join(globalDir, file), 'utf8');
+    const matches = content.matchAll(/\bimport\s.*?from\s+["'](@voidzero-dev\/[^"']+)["']/g);
+    for (const match of matches) {
+      errors.push(`  ${file}: unbundled import of "${match[1]}"`);
+    }
+  }
+
+  if (errors.length > 0) {
+    throw new Error(
+      `Rolldown failed to bundle workspace packages in dist/global/:\n${errors.join('\n')}\n` +
+        `Ensure these packages are built before running the CLI build.`,
+    );
+  }
 }
 
 /**

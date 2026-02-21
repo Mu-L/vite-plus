@@ -45,9 +45,8 @@ runs:
         pnpm --filter @rolldown/pluginutils build
         pnpm --filter rolldown build-node
         pnpm --filter vite build-types
-        pnpm --filter=@voidzero-dev/vite-plus-core build
-        pnpm --filter=@voidzero-dev/vite-plus-test build
-        pnpm --filter=vite-plus build-ts
+        pnpm --filter "@voidzero-dev/*" build
+        pnpm --filter vite-plus build-ts
 
     # NAPI builds - only run on cache miss (slow, especially on Windows)
     # Must run before vite-plus TypeScript builds which depend on the bindings
