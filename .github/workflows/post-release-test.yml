@@ -3,6 +3,12 @@ name: Post-Release Test
 permissions: {}
 
 on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to test (e.g., 0.0.0-g12345678.20260228-1200)'
+        required: true
+        type: string
   workflow_run:
     workflows: ['Release']
     types: [completed]
@@ -15,42 +21,51 @@ jobs:
   extract-version:
     name: Extract release version
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.conclusion == 'success'
+    # For workflow_run: only run if the release succeeded
+    # For workflow_dispatch: always run (manual trigger with explicit version)
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     permissions:
       contents: read
     outputs:
       version: ${{ steps.version.outputs.version }}
       npm_tag: ${{ steps.version.outputs.npm_tag }}
     steps:
-      - name: Find GitHub release for this commit
+      - name: Resolve version
         id: version
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
+          MANUAL_VERSION: ${{ inputs.version }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
-          # Find the release whose target_commitish matches the workflow run's head SHA
-          RELEASE_JSON=$(gh api repos/$GH_REPO/releases --jq ".[] | select(.target_commitish == \"$HEAD_SHA\") | {tag_name, prerelease}" | head -1)
-          if [ -z "$RELEASE_JSON" ]; then
-            echo "Error: No GitHub release found for commit $HEAD_SHA"
-            exit 1
-          fi
-
-          TAG_NAME=$(echo "$RELEASE_JSON" | jq -r '.tag_name')
-          PRERELEASE=$(echo "$RELEASE_JSON" | jq -r '.prerelease')
-
-          # Strip 'v' prefix to get version
-          VERSION="${TAG_NAME#v}"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
-          # Determine npm tag
-          if [ "$PRERELEASE" = "true" ]; then
+          if [ -n "$MANUAL_VERSION" ]; then
+            # Manual trigger: use the provided version directly
+            echo "version=$MANUAL_VERSION" >> "$GITHUB_OUTPUT"
             echo "npm_tag=test" >> "$GITHUB_OUTPUT"
+            echo "Using manually specified version: $MANUAL_VERSION"
           else
-            echo "npm_tag=latest" >> "$GITHUB_OUTPUT"
-          fi
+            # Automatic trigger: find the release by commit SHA
+            RELEASE_JSON=$(gh api repos/$GH_REPO/releases --jq ".[] | select(.target_commitish == \"$HEAD_SHA\") | {tag_name, prerelease}" | head -1)
+            if [ -z "$RELEASE_JSON" ]; then
+              echo "Error: No GitHub release found for commit $HEAD_SHA"
+              exit 1
+            fi
 
-          echo "Found release: tag=$TAG_NAME version=$VERSION prerelease=$PRERELEASE"
+            TAG_NAME=$(echo "$RELEASE_JSON" | jq -r '.tag_name')
+            PRERELEASE=$(echo "$RELEASE_JSON" | jq -r '.prerelease')
+
+            # Strip 'v' prefix to get version
+            VERSION="${TAG_NAME#v}"
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+            if [ "$PRERELEASE" = "true" ]; then
+              echo "npm_tag=test" >> "$GITHUB_OUTPUT"
+            else
+              echo "npm_tag=latest" >> "$GITHUB_OUTPUT"
+            fi
+
+            echo "Found release: tag=$TAG_NAME version=$VERSION prerelease=$PRERELEASE"
+          fi
 
   wait-for-npm-propagation:
     name: Wait for npm propagation
