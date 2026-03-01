@@ -5,8 +5,7 @@
 //! - `VITE_LOG_OUTPUT`: Output format — `"chrome-json"` for Chrome DevTools timeline,
 //!   `"readable"` for pretty-printed output, or default stdout.
 
-use std::any::Any;
-use std::sync::atomic::AtomicBool;
+use std::{any::Any, sync::atomic::AtomicBool};
 
 use tracing_chrome::ChromeLayerBuilder;
 use tracing_subscriber::{
@@ -44,8 +43,8 @@ pub fn init_tracing() -> Option<Box<dyn Any + Send>> {
             .with_targets([("tokenize", LevelFilter::OFF), ("parse", LevelFilter::OFF)])
     };
 
-    let output_mode = std::env::var(env_vars::VITE_LOG_OUTPUT)
-        .unwrap_or_else(|_| "stdout".to_string());
+    let output_mode =
+        std::env::var(env_vars::VITE_LOG_OUTPUT).unwrap_or_else(|_| "stdout".to_string());
 
     match output_mode.as_str() {
         "chrome-json" => {
@@ -53,10 +52,7 @@ pub fn init_tracing() -> Option<Box<dyn Any + Send>> {
                 .trace_style(tracing_chrome::TraceStyle::Async)
                 .include_args(true)
                 .build();
-            tracing_subscriber::registry()
-                .with(targets)
-                .with(chrome_layer)
-                .init();
+            tracing_subscriber::registry().with(targets).with(chrome_layer).init();
             Some(Box::new(guard))
         }
         "readable" => {

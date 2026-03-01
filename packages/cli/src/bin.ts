@@ -46,8 +46,10 @@ if (command === 'create') {
 } else {
   // All other commands — delegate to Rust core via NAPI binding
   if (process.env.VITE_LOG) {
+    const processUptime = (process.uptime() * 1000).toFixed(2);
+    const jsModuleLoad = (performance.now() - jsStartTime).toFixed(2);
     console.log(
-      `[vite-plus] JS startup: ${(performance.now() - jsStartTime).toFixed(2)}ms`,
+      `[vite-plus] process uptime: ${processUptime}ms, JS module load: ${jsModuleLoad}ms`,
     );
   }
   run({
