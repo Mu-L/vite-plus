@@ -50,8 +50,9 @@ execSync(`${cli} migrate --no-agent --no-interactive`, {
 // Migration may create vite.config.ts, preserve an existing .ts/.js, or create none at all.
 const tsPath = join(cwd, 'vite.config.ts');
 const jsPath = join(cwd, 'vite.config.js');
+let viteConfigPath: string;
 if (existsSync(tsPath) || existsSync(jsPath)) {
-  const viteConfigPath = existsSync(tsPath) ? tsPath : jsPath;
+  viteConfigPath = existsSync(tsPath) ? tsPath : jsPath;
   const viteConfig = await readFile(viteConfigPath, 'utf-8');
   await writeFile(
     viteConfigPath,
@@ -59,9 +60,16 @@ if (existsSync(tsPath) || existsSync(jsPath)) {
     'utf-8',
   );
 } else {
+  viteConfigPath = tsPath;
   await writeFile(
     tsPath,
     `import { defineConfig } from 'vite-plus';\n\nexport default defineConfig({\n  run: { cacheScripts: true },\n});\n`,
     'utf-8',
   );
+}
+// Format the modified/created config to match project's style (avoids format check failures)
+try {
+  execSync(`npx prettier --write ${JSON.stringify(viteConfigPath)}`, { cwd, stdio: 'inherit' });
+} catch {
+  // prettier may not be installed; that's fine
 }
