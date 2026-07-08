@@ -331,6 +331,13 @@ struct Case {
     /// Marks the trial `#[ignore]` (runnable with `cargo test -- --ignored`).
     #[serde(default)]
     ignore: bool,
+    /// Run this case in isolation: nothing else runs while it does (the suite
+    /// otherwise runs cases in parallel). Set for signal-sensitive flows (e.g.
+    /// watch modes) that concurrent PTY activity would perturb; ctrl-c cases
+    /// are detected automatically (see `case_needs_isolation`) and need not
+    /// set this.
+    #[serde(default)]
+    serial: bool,
     /// Serve the packed checkout packages through the local npm registry.
     #[serde(default, rename = "local-registry")]
     local_registry: bool,
@@ -919,6 +926,59 @@ fn run_case(
     snapshots.check_snapshot(snapshot_name, &doc)
 }
 
+/// Global execution gate. Ordinary cases hold a shared (read) lease and run
+/// concurrently; isolated cases hold the exclusive (write) lease, so nothing
+/// else runs while they do. This replaces the old blanket `--test-threads=1`
+/// on Linux: only the few signal-sensitive cases pay for serialization, while
+/// the rest parallelize as they already do on macOS and Windows.
+///
+/// This coordinates threads within a single `cargo test` process, which is the
+/// Linux and macOS snapshot jobs and the only place the parallel-PTY
+/// signal-routing flakiness occurs. The Windows job runs the suite under
+/// `cargo nextest`, which executes each trial in its own process; there the
+/// gate is a no-op, but isolation is stronger for free — a signal-sensitive
+/// case already has its own process, PTY, and process group, which is exactly
+/// what this gate reconstructs for the shared-process case.
+static EXECUTION_GATE: std::sync::RwLock<()> = std::sync::RwLock::new(());
+
+/// Held for a case's whole run: either a shared read lease (parallel) or the
+/// exclusive write lease (isolated). Poisoning is ignored — a case that
+/// panicked already failed, and its neighbours should still run.
+enum GateLease {
+    Shared(
+        #[expect(dead_code, reason = "held for its Drop")] std::sync::RwLockReadGuard<'static, ()>,
+    ),
+    Exclusive(
+        #[expect(dead_code, reason = "held for its Drop")] std::sync::RwLockWriteGuard<'static, ()>,
+    ),
+}
+
+fn acquire_gate(isolated: bool) -> GateLease {
+    use std::sync::PoisonError;
+    if isolated {
+        GateLease::Exclusive(EXECUTION_GATE.write().unwrap_or_else(PoisonError::into_inner))
+    } else {
+        GateLease::Shared(EXECUTION_GATE.read().unwrap_or_else(PoisonError::into_inner))
+    }
+}
+
+/// A case needs isolation if it opts in with `serial` or scripts a ctrl-c
+/// keystroke. Parallel PTYs on Linux misroute signals, which is the one
+/// documented flakiness source the old blanket serialization guarded against;
+/// isolating exactly those cases keeps the guarantee while letting the rest
+/// run in parallel.
+fn case_needs_isolation(case: &Case) -> bool {
+    case.serial
+        || case.steps.iter().chain(&case.after).any(|step| {
+            step.interactions.iter().any(|interaction| {
+                matches!(
+                    interaction,
+                    Interaction::WriteKey(WriteKeyInteraction { write_key: WriteKey::CtrlC })
+                )
+            })
+        })
+}
+
 fn main() {
     let tmp_dir = tempfile::tempdir().unwrap();
     // dunce, not std: std's canonicalize returns a `\\?\` verbatim path on
@@ -955,13 +1015,12 @@ fn main() {
         .collect::<Vec<_>>();
     fixture_paths.sort();
 
-    let mut args = libtest_mimic::Arguments::from_args();
-    // On Linux, parallel PTY + signal-routing contention makes ctrl-c cases
-    // flaky (inherited from vite-task's snapshot suite; scoping this serialization
-    // is an open question in the RFC).
-    if cfg!(target_os = "linux") && args.test_threads.is_none() {
-        args.test_threads = Some(1);
-    }
+    // Cases run in parallel on every platform. Signal-sensitive cases (ctrl-c,
+    // or `serial = true`) instead take the exclusive execution lease so they
+    // run in isolation; see `EXECUTION_GATE`. This replaces the old
+    // Linux-wide `--test-threads=1`, which serialized the entire suite to
+    // protect a handful of ctrl-c cases.
+    let args = libtest_mimic::Arguments::from_args();
 
     // `VP_SNAP_SKIP_FLAVORS=local` (comma-separated) skips registering trials
     // for a flavor entirely; CI legs that don't build the JS CLI use it.
@@ -1026,8 +1085,12 @@ fn main() {
                 let tmp_dir_path = Arc::clone(&tmp_dir_path);
                 let case = Arc::clone(&case);
                 let ignored = case.ignore;
+                let isolated = case_needs_isolation(&case);
                 tests.push(
                     libtest_mimic::Trial::test(trial_name, move || {
+                        // Hold the execution lease for the whole case: shared
+                        // (parallel) unless the case needs isolation.
+                        let _gate = acquire_gate(isolated);
                         let runtime = match runtimes.get(flavor) {
                             Ok(runtime) => runtime,
                             Err(message) => return Err(message.clone().into()),
